@@ -1,7 +1,7 @@
 {
     // ST's built-in settings for soft word wrap.
 	"word_wrap": true,
-    "wrap_width": 80
+    "wrap_width": 80,
 
     // Enable hard line wrapping
 	"hard_wrap_lines": true,
@@ -13,5 +13,5 @@
     // Condense all whitespace characters to a single space?
     "hard_wrap_replace_whitespace": true,
     // Removes superfluous whitespace at beginnings/endings of lines.
-    "hard_wrap_drop_whitespace": true,
+    "hard_wrap_drop_whitespace": true
 }
