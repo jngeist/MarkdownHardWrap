@@ -1,6 +1,6 @@
 import sublime
 import sublime_plugin
-import paragraph
+import paragraph as par
 import textwrap
 import string
 import re
@@ -8,8 +8,10 @@ import re
 
 def get_width(view):
     """
-    Utility function used to determine at what line width to wrap lines in MarkdownHardWrap.
+    Utility function used to determine at what line width to wrap lines in
+    MarkdownHardWrap.
     """
+
     width = 0
     for key in ["hard_wrap_width", "wrap_width"]:
         if width == 0 and view.settings().get(key):
@@ -33,14 +35,15 @@ def get_width(view):
     return width
 
 
-class MarkdownWrapLinesCommand(paragraph.WrapLinesCommand):
+class MarkdownWrapLinesCommand(par.WrapLinesCommand):
     """
-    Command for adding hard line breaks to paragraphs in a Markdown-friendly way.
-    Preserves indentation and Markdown syntax.
+    Command for adding hard line breaks to paragraphs in a Markdown-friendly
+    way. Preserves indentation and Markdown syntax.
     """
 
     persistent_prefixes = re.compile("^\s*(>\s+)+")
     initial_prefixes = re.compile("^\s*([-*+]|\d+\.)?\s+")
+    MARKER = u"\u200B"
 
     def extract_prefix(self, sr):
         lines = self.view.split_by_newlines(sr)
@@ -86,8 +89,9 @@ class MarkdownWrapLinesCommand(paragraph.WrapLinesCommand):
 
         paragraphs = []
         for s in self.view.sel():
+            self.view.insert(edit, s.begin(), self.MARKER)
             paragraphs.extend(
-                paragraph.all_paragraphs_intersecting_selection(self.view, s))
+                par.all_paragraphs_intersecting_selection(self.view, s))
 
         if len(paragraphs) > 0:
             self.view.sel().clear()
@@ -125,10 +129,18 @@ class MarkdownWrapLinesCommand(paragraph.WrapLinesCommand):
 
             # It's unhelpful to have the entire paragraph selected, just leave the
             # selection at the end
-            ends = [s.end() - 1 for s in self.view.sel()]
-            self.view.sel().clear()
-            for pt in ends:
-                self.view.sel().add(sublime.Region(pt))
+#            ends = [s.end() - 1 for s in self.view.sel()]
+#            self.view.sel().clear()
+#            for pt in ends:
+#                self.view.sel().add(sublime.Region(pt))
+            sel = self.view.sel()
+            sel = self.view.find_all(self.MARKER)
+
+#            sel.clear()
+#            for c in self.view.find_all(self.MARKER):
+#                sel.add(sublime.Region(c.begin(), c.begin()))
+#                self.view.erase(edit, c)
+
 
 
 class ToggleHardWrapCommand(sublime_plugin.TextCommand):
@@ -156,6 +168,7 @@ class AutoHardWrapLines(sublime_plugin.EventListener):
 
     TARGET_SETTINGS = ['hard_wrap_lines', 'hard_wrap_width',
                        'wrap_width', 'ruler']
+
     width = 0
     callback_is_registered = False
 
@@ -182,6 +195,8 @@ class AutoHardWrapLines(sublime_plugin.EventListener):
 
     def on_modified(self, view):
         if self.active(view):
-            c = view.rowcol(view.sel()[-1].end())[1]
-            if c > self.width:
-                view.run_command('markdown_wrap_lines')
+            if len(view.sel()) == 1:
+                s = view.sel()[0]
+                llen = view.line(s).size()
+                if llen > self.width:
+                    view.run_command('markdown_wrap_lines')

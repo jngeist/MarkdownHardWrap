@@ -2,6 +2,8 @@
 
 MarkdownHardWrap (hereafter MHW) is a simple plugin for adding hard line breaks to Markdown/MultiMarkdown documents in a syntax-friendly way.
 
+Note: before you use this, please see [What it doesn't do][].
+
 ## What it does ##
 
 ### List items ###
@@ -83,8 +85,13 @@ MHW:
 
 While MHW provides a `hard_wrap_lines` setting to automatically hard wrap paragraphs as needed, there may be some cases where a mix of longer and hard-wrapped lines is desirable (as in this particular [Github-flavored Markdown][] document.) Leaving `word_wrap` enabled with the standard hard wrap command will sometimes result in lines breaking twice, such that the newline character (and sometimes the word preceding it) appears *after* the soft wrap. MHW avoids this problem by providing a separate `hard_wrap_width` setting which allows you to add a character or two of padding to your `wrap_width` setting, such that this problem is avoided.
 
-
  [Github-flavored Markdown]: http://github.github.com/github-flavored-markdown/
+
+## What it doesn't do ##
+
+At this point, there's one big flaw with this: the automatic hard-wrap feature doesn't work when in the middle of a paragraph. It wraps fine writing new text – so, as I type this, I am writing at the end of a new paragraph, and so the wrap works fine. However, if I were to go up and edit a previous line, wrap would break.
+
+This is a problem I'm working on. 
 
 ### Not yet implemented ###
 
