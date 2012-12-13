@@ -2,7 +2,7 @@
 
 MarkdownHardWrap (hereafter MHW) is a simple plugin for adding hard line breaks to Markdown/MultiMarkdown documents in a syntax-friendly way.
 
-Note: before you use this, please see [What it doesn't do][].
+Note: before you use this, please see [What it doesn't do](#what-it-doesnt-do).
 
 ## What it does ##
 

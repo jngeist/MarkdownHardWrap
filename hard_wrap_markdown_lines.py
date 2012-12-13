@@ -89,7 +89,7 @@ class MarkdownWrapLinesCommand(par.WrapLinesCommand):
 
         paragraphs = []
         for s in self.view.sel():
-            self.view.insert(edit, s.begin(), self.MARKER)
+            #self.view.insert(edit, s.begin(), self.MARKER)
             paragraphs.extend(
                 par.all_paragraphs_intersecting_selection(self.view, s))
 
@@ -129,12 +129,12 @@ class MarkdownWrapLinesCommand(par.WrapLinesCommand):
 
             # It's unhelpful to have the entire paragraph selected, just leave the
             # selection at the end
-#            ends = [s.end() - 1 for s in self.view.sel()]
-#            self.view.sel().clear()
-#            for pt in ends:
-#                self.view.sel().add(sublime.Region(pt))
-            sel = self.view.sel()
-            sel = self.view.find_all(self.MARKER)
+            ends = [s.end() - 1 for s in self.view.sel()]
+            self.view.sel().clear()
+            for pt in ends:
+                self.view.sel().add(sublime.Region(pt))
+            #sel = self.view.sel()
+            #sel = self.view.find_all(self.MARKER)
 
 #            sel.clear()
 #            for c in self.view.find_all(self.MARKER):
@@ -142,20 +142,32 @@ class MarkdownWrapLinesCommand(par.WrapLinesCommand):
 #                self.view.erase(edit, c)
 
 
+class ToggleHardWrapCommand(sublime_plugin.WindowCommand):
+    def run(self):
+        self.window.run_command('toggle_setting', 'hard_wrap_lines')
 
-class ToggleHardWrapCommand(sublime_plugin.TextCommand):
-    """
-    Toggles hard_wrap_lines setting for a given view.
-    Used to disable/enable hard wrap on a per-buffer basis.
-    """
+    def is_visible(self):
+        view = sublime.active_window().active_view()
+        if view and 'Markdown' in view.settings().get('syntax'):
+            print "Returning true"
+            return True
+        else:
+            print "Returning false"
+            return False
 
-    def is_enabled(self):
-        return 'Markdown' in self.view.settings().get('syntax')
-
-    def run(self, *args):
-        s = self.view.settings()
-        enable = not s.get('hard_wrap_lines')
-        s.set('hard_wrap_lines', enable)
+#class ToggleHardWrapCommand(sublime_plugin.TextCommand):
+#    """
+#    Toggles hard_wrap_lines setting for a given view.
+#    Used to disable/enable hard wrap on a per-buffer basis.
+#    """
+#
+#    def is_enabled(self):
+#        return 'Markdown' in self.view.settings().get('syntax')
+#
+#    def run(self, *args):
+#        s = self.view.settings()
+#        enable = not s.get('hard_wrap_lines')
+#        s.set('hard_wrap_lines', enable)
 
 
 class AutoHardWrapLines(sublime_plugin.EventListener):
