@@ -42,7 +42,7 @@ class MarkdownWrapLinesCommand(par.WrapLinesCommand):
     """
 
     persistent_prefixes = re.compile("^\s*(>\s+)+")
-    initial_prefixes = re.compile("^\s*([-*+]|\d+\.)?\s+")
+    initial_prefixes = re.compile("^\s*([-*+:]|\d+\.)?\s+")
     MARKER = u"\u200B"
 
     def extract_prefix(self, sr):
